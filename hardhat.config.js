@@ -12,12 +12,10 @@ const PRIVATE_KEY = DELPOY_CONFIG.PRIVATE_KEY;
 module.exports = {
   solidity: "0.8.0",
   networks: {
-    // BSC 主网
     bsc: {
       url: 'https://bsc-dataseed1.binance.org/',
       accounts: [`0x${PRIVATE_KEY}`],
     },
-    // BSC 测试网
     bsctestnet: {
       url: 'https://data-seed-prebsc-1-s1.binance.org:8545',
       accounts: [`0x${PRIVATE_KEY}`],
