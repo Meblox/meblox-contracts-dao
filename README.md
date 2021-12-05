@@ -1,4 +1,5 @@
 # Meblox DAO
+![image](https://www.meblox.io/img/logoHeader.17de39e4.png)
 > A digital distributed metaverse super civilization is about to be born!
 + [Official website](https://www.meblox.io)
 + [Twitter](https://twitter.com/MebloxProtocol)
