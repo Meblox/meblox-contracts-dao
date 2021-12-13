@@ -97,6 +97,14 @@ contract MebloxDAO is Ownable {
     /// @param _memberAddress Addresse of the new member
     /// [notice] Upon success, the member will have permissions
     function addMember(address _memberAddress) public onlyOwner {
+        bool _isNewMember = true;
+        for (uint256 _index = 0; _index < memberList.length; _index++) {
+            if (memberList[_index].memberAddress == _memberAddress) {
+                _isNewMember = false;
+            }
+        }
+        require(_isNewMember, "The address is already a member");
+
         memberList.push(
             Member({
                 memberAddress: _memberAddress,
@@ -232,6 +240,7 @@ contract MebloxDAO is Ownable {
             if (resolutionVotesList[_resolutionId][_index].memberAddress == msg.sender) {
                 _resolutionMember = true;
                 _memberIndex = _index;
+                break;
             }
         }
 

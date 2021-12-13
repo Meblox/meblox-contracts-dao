@@ -15,9 +15,9 @@ contract MebloxToken is ERC20PresetMinterPauser, Ownable {
 
     constructor() ERC20PresetMinterPauser(_name, _symbol) {}
 
-    uint256 maxSupply = 1000000000 * (10 ** decimals());
-    uint256 mintMax = 7000000 * (10 ** decimals());
-    uint256 mintInterval = 7*24*60*20;
+    uint256 constant maxSupply = 1000000000000000000000000000;
+    uint256 constant mintMax = 7000000000000000000000000;
+    uint256 constant mintInterval = 201600;
     uint256 lastMintTime = 0;
 
     mapping (address => bool) public fromBanList;
@@ -29,8 +29,8 @@ contract MebloxToken is ERC20PresetMinterPauser, Ownable {
     event LogTokenTransfer(address, address, uint256);
 
     function _beforeTokenTransfer(address _from, address _to, uint256 _amount) internal virtual override(ERC20PresetMinterPauser) {
-        require(fromBanList[_from] == false, 'Transfer fail because of from address');
-        require(toBanList[_to] == false, 'Transfer fail because of to address');
+        require(!fromBanList[_from], 'Transfer fail because of from address');
+        require(!toBanList[_to], 'Transfer fail because of to address');
         emit LogTokenTransfer(_from, _to, _amount);
         super._beforeTokenTransfer(_from, _to, _amount);
     }

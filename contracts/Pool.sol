@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import './IUniswapV2Pair.sol';
+import './MebloxSwapPair.sol';
 
 contract Pool is Ownable {
 
@@ -86,6 +86,7 @@ contract Pool is Ownable {
     /// @param _poolId The index of the pool. See `poolInfo`.
     /// @param _minDepositLimit The minimum amount to deposit.
     function setPool(uint256 _poolId, uint256 _minDepositLimit, uint256 _minFirstDepositLimit) public onlyOwner {
+        require(_poolId < poolInfoList.length, "Pool does not exist");
         PoolInfo storage pool = poolInfoList[_poolId];
         pool.minDepositLimit = _minDepositLimit;
         pool.minFirstDepositLimit = _minFirstDepositLimit;
@@ -103,6 +104,7 @@ contract Pool is Ownable {
 
     /// @notice Deposit LP tokens to MCV2 for Meblox allocation.
     function deposit(uint256 _poolId, uint256 _depositLpAmount) public {
+        require(_poolId < poolInfoList.length, "Pool does not exist");
         require(_depositLpAmount > 0, "Pool: DepositAmount must great than 0");
         PoolInfo storage pool = poolInfoList[_poolId];
         uint256 lpPrice = getLpPrice(_poolId);
@@ -143,6 +145,7 @@ contract Pool is Ownable {
     }
 
     function withdraw(uint256 _poolId, uint256 _depositRecordId) public {
+        require(_poolId < poolInfoList.length, "Pool does not exist");
 
         DepositRecord storage userDepositRecord = userDepositRecordList[msg.sender][_poolId][_depositRecordId];
 
@@ -180,9 +183,9 @@ contract Pool is Ownable {
 
     function getLpPrice(uint256 _poolId) public view returns (uint256) {
         PoolInfo memory pool = poolInfoList[_poolId];
-        (uint112 reserve0, uint112 reserve1,) = IUniswapV2Pair(address(pool.lpToken)).getReserves();
+        (uint112 reserve0, uint112 reserve1,) = MebloxSwapPair(address(pool.lpToken)).getReserves();
         uint112 reserveMToken = reserve0;
-        address token0 = IUniswapV2Pair(address(pool.lpToken)).token0();
+        address token0 = MebloxSwapPair(address(pool.lpToken)).token0();
         if (mTokenAddress == token0) {
             reserveMToken = reserve1;
         }
@@ -199,3 +202,4 @@ contract Pool is Ownable {
         return userDepositRecordList[_userAddress][_poolId][_recordId];
     }
 }
+            
