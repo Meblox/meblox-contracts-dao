@@ -78,6 +78,7 @@ contract MebloxDAO is Ownable {
         uint256 ceateTime;
     }
 
+    mapping (address => bool) memberRecord;
     Member[] public memberList;
     FundPool[] public fundPoolList;
     Resolution[] public resolutionList;
@@ -97,26 +98,21 @@ contract MebloxDAO is Ownable {
     /// @param _memberAddress Addresse of the new member
     /// [notice] Upon success, the member will have permissions
     function addMember(address _memberAddress) public onlyOwner {
-        bool _isNewMember = true;
-        for (uint256 _index = 0; _index < memberList.length; _index++) {
-            if (memberList[_index].memberAddress == _memberAddress) {
-                _isNewMember = false;
-            }
-        }
-        require(_isNewMember, "The address is already a member");
-
+        require(!memberRecord[_memberAddress], "The address is already a member");
         memberList.push(
             Member({
                 memberAddress: _memberAddress,
                 permissions: 1
             })
         );
+        memberRecord[_memberAddress] = true;
         emit LogAddMember(_memberAddress);
     }
 
     /// @param _memberId Member ID
     /// @param _permissions 1:have permission, 0:no permission
     function setMemberPermissions(uint256 _memberId, int _permissions) public onlyOwner {
+        require(_memberId < memberList.length, "_memberId illegal");
         Member storage member = memberList[_memberId];
         member.permissions = _permissions;
         emit LogSetMemberPermissions(member.memberAddress, _permissions);
